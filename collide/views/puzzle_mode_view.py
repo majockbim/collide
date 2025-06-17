@@ -22,7 +22,7 @@ def puzzle_view(page: ft.Page):
     
     # Game state
     lines = []
-    drawing = {"start": None}
+    drawing = {"start": None, "current_line": None}
     is_drawing_enabled = True
     game_running = False
     
@@ -36,9 +36,16 @@ def puzzle_view(page: ft.Page):
     physics_engine = PhysicsEngine(canvas_width, canvas_height)
     physics_engine.set_ball(physics_ball)
     
-    # Target setup
-    target_x = random.randint(50, canvas_width - 50)
-    target_y = random.randint(canvas_height - 150, canvas_height - 100)
+    # Target setup - positioned in bottom 3/4 of screen as requested
+    def generate_new_target():
+        # Bottom 3/4 of screen means from y = canvas_height * 0.25 to canvas_height - 100
+        min_y = int(canvas_height * 0.25)
+        max_y = canvas_height - 100
+        target_x = random.randint(50, canvas_width - 50)
+        target_y = random.randint(min_y, max_y)
+        return target_x, target_y
+    
+    target_x, target_y = generate_new_target()
     physics_engine.set_target(target_x, target_y)
     
     # Visual elements
@@ -90,7 +97,7 @@ def puzzle_view(page: ft.Page):
         controls=[ball_container, target_container],
     )
     
-    # Control panel at bottom
+    # Control panel at bottom - moved up to be more visible
     control_panel = ft.Container(
         content=ft.Column([
             status_text,
@@ -101,79 +108,103 @@ def puzzle_view(page: ft.Page):
         ], spacing=10, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
         bgcolor="rgba(0,0,0,0.8)",
         padding=15,
-        height=100,
+        height=120,
         width=canvas_width,
     )
     
-    # Add control panel to stack
+    # Add control panel to stack - positioned higher up
     game_stack.controls.append(ft.Container(
         content=control_panel,
-        bottom=0,
+        bottom=20,  # Changed from 0 to 20 to move it up
         left=0,
     ))
     
-    # Back button overlay
-    back_btn = ft.Container(
-        content=ft.Container(
-            content=ft.Icon(ft.Icons.ARROW_BACK, color="white", size=24),
-            bgcolor="rgba(0,0,0,0.6)",
-            padding=10,
-            border_radius=20,
-        ),
-        top=40,
-        left=20,
-    )
-    
+    # Back button overlay - using the fixed back_button component
+    back_btn = back_button(page)
     game_stack.controls.append(back_btn)
     
     def create_line_visual(x1, y1, x2, y2):
-        """Create visual representation of a line"""
         import math
-        
-        # Calculate line properties
+
         dx = x2 - x1
         dy = y2 - y1
-        length = math.sqrt(dx*dx + dy*dy)
-        
-        if length < 5:  # Skip very short lines
+        length = math.sqrt(dx * dx + dy * dy)
+
+        # Allow shorter lines for testing
+        if length < 2:  # instead of 5
             return None
-            
+
         angle = math.atan2(dy, dx)
-        
-        line_container = ft.Container(
+        center_x = (x1 + x2) / 2
+        center_y = (y1 + y2) / 2
+
+        return ft.Container(
             width=length,
             height=3,
             bgcolor="#2b2d2e",
             border_radius=1.5,
-            left=x1,
-            top=y1 - 1.5,
+            left=center_x - length / 2,
+            top=center_y - 1.5,
             rotate=ft.transform.Rotate(angle),
         )
-        
-        return line_container
     
     def on_pointer_down(e):
         nonlocal is_drawing_enabled
         if not is_drawing_enabled or game_running:
             return
+
         drawing["start"] = (e.local_x, e.local_y)
+        print(f"[DEBUG] Pointer down at {drawing['start']}")
+
+    
+    def on_pointer_move(e):
+        if not is_drawing_enabled or not drawing["start"] or game_running:
+            return
+
+        # Remove previous preview line
+        if drawing["current_line"]:
+            try:
+                game_stack.controls.remove(drawing["current_line"])
+            except:
+                pass
+
+        x1, y1 = drawing["start"]
+        x2, y2 = e.local_x, e.local_y
+
+        preview_line = create_line_visual(x1, y1, x2, y2)
+        if preview_line:
+            preview_line.bgcolor = "rgba(43, 45, 46, 0.5)"  # optional: show ghost preview
+            game_stack.controls.append(preview_line)  # use append to avoid bad stacking
+            drawing["current_line"] = preview_line
+            page.update()
+
     
     def on_pointer_up(e):
         nonlocal is_drawing_enabled
         if not is_drawing_enabled or not drawing["start"] or game_running:
             return
-        
+
+        # Remove preview
+        if drawing["current_line"]:
+            try:
+                game_stack.controls.remove(drawing["current_line"])
+            except:
+                pass
+            drawing["current_line"] = None
+
         x1, y1 = drawing["start"]
         x2, y2 = e.local_x, e.local_y
-        
-        # Create line visual
-        line_visual = create_line_visual(x1, y1, x2, y2)
-        if line_visual:
-            game_stack.controls.insert(-3, line_visual)  # Insert before control panel and back button
+        print(f"[DEBUG] Pointer up at {(x2, y2)}")
+
+        final_line = create_line_visual(x1, y1, x2, y2)
+        if final_line:
+            game_stack.controls.append(final_line)
             lines.append(((x1, y1), (x2, y2)))
-        
+            print(f"[DEBUG] Line added: {(x1, y1)} -> {(x2, y2)}")
+
         drawing["start"] = None
         page.update()
+
     
     async def game_loop():
         """Main game animation loop"""
@@ -195,7 +226,7 @@ def puzzle_view(page: ft.Page):
                 is_drawing_enabled = False
             elif result == "lose":
                 status_text.value = "😞 Ball missed! Try again!"
-                status_text.color = "#FF5722"
+                status_text.color = "#FF5722" 
                 game_running = False
                 is_drawing_enabled = True
             elif result == "stopped":
@@ -207,28 +238,33 @@ def puzzle_view(page: ft.Page):
             page.update()
             await asyncio.sleep(1/60)  # 60 FPS
     
-    async def start_game(e):
-        nonlocal game_running, is_drawing_enabled
-        
-        if game_running:
-            return
-            
-        game_running = True
-        is_drawing_enabled = False
-        
-        # Set up physics
-        physics_engine.add_lines(lines)
-        physics_ball.start_moving()
-        
-        status_text.value = "Ball is moving..."
-        status_text.color = "white"
-        page.update()
-        
-        # Start game loop
-        await game_loop()
+    def start_game_handler(e):
+        async def _start_game():
+            nonlocal game_running, is_drawing_enabled
+
+            if game_running:
+                return
+
+            game_running = True
+            is_drawing_enabled = False
+
+            print(f"Starting game with {len(lines)} lines")
+
+            # Set up physics
+            physics_engine.add_lines(lines)
+            physics_ball.start_moving()
+
+            status_text.value = "Ball is moving..."
+            status_text.color = "white"
+            page.update()
+
+            await game_loop()
+
+        page.run_task(_start_game)
+
     
     def reset_game(e):
-        nonlocal game_running, is_drawing_enabled, lines
+        nonlocal game_running, is_drawing_enabled, lines, target_x, target_y
         
         game_running = False
         is_drawing_enabled = True
@@ -245,30 +281,30 @@ def puzzle_view(page: ft.Page):
         lines.clear()
         # Remove line visuals (keep ball, target, control panel, back button)
         game_stack.controls = [ball_container, target_container, 
-                              ft.Container(content=control_panel, bottom=0, left=0),
+                              ft.Container(content=control_panel, bottom=20, left=0),
                               back_btn]
         
         # Generate new target
-        nonlocal target_x, target_y
-        target_x = random.randint(50, canvas_width - 50)
-        target_y = random.randint(canvas_height - 150, canvas_height - 100)
+        target_x, target_y = generate_new_target()
         physics_engine.set_target(target_x, target_y)
         target_container.left = target_x - 15
         target_container.top = target_y - 20
         
         status_text.value = "Draw lines to guide the ball to X, then tap START!"
         status_text.color = "white"
+        
+        # Clear any preview line
+        drawing["start"] = None
+        drawing["current_line"] = None
+        
         page.update()
-    
-    def go_back(e):
-        page.go("/menu")
     
     # Set up event handlers
     game_stack.on_pointer_down = on_pointer_down
+    game_stack.on_pointer_move = on_pointer_move  # Added for live preview
     game_stack.on_pointer_up = on_pointer_up
-    start_button.on_click = lambda e: page.run_task(start_game(e))
+    start_button.on_click = start_game_handler
     reset_button.on_click = reset_game
-    back_btn.on_click = go_back
     
     # Main container with full screen game
     main_container = ft.Container(

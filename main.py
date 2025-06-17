@@ -29,16 +29,9 @@ def main(page: ft.Page):
 
     # Initialize history stack
     if not page.session.contains_key("route_stack"):
-        page.session.set("route_stack", ["/"]) # Start at "/"
+        page.session.set("route_stack", ["/"])
 
     def route_change(e):
-        route_stack = page.session.get("route_stack")
-
-        # Only add to stack if this is a forward navigation
-        if not route_stack or route_stack[-1] != page.route:
-            route_stack.append(page.route)
-            page.session.set("route_stack", route_stack)
-        
         # Call the correct view
         routes.get(page.route, start_view)(page)
 
