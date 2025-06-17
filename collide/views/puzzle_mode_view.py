@@ -3,6 +3,7 @@ import random
 from collide.components.back_button import back_button
 
 def puzzle_view(page: ft.Page):
+    
     page.title = "Puzzle Mode"
     page.controls.clear()
 
