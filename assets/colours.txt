@@ -1,0 +1,8 @@
+Background colours:
+  offwhite #ebece7
+  darker #eae9e2
+
+Text colours:
+  black #2b2d2e
+  red #e52c34
+

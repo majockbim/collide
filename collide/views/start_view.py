@@ -11,8 +11,8 @@ def start_view(page: ft.Page):
         ft.Container(
             content=ft.Column(
                 [
-                    ft.Text("collide", size=48, weight=ft.FontWeight.BOLD),
-                    ft.Text("press to start", size=18, italic=True),
+                    ft.Text("collide", size=48, weight=ft.FontWeight.BOLD, color="#e52c34"),
+                    ft.Text("press to start", size=16, italic=True, color="#2b2d2e"),
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
