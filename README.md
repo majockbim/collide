@@ -14,7 +14,15 @@ The game features two modes:
 - pip (Python package manager)
 
 ---
-1. Set up Virtual Environment 
+
+## 📦 Installation
+
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/yourusername/collide.git
+   cd collide
+
+1. Set up Virtual Environment (optional)
 
 python -m venv venv
 # On Windows
