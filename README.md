@@ -23,15 +23,19 @@ The game features two modes:
    cd collide
 
 1. Set up Virtual Environment (optional)
-
-python -m venv venv
+    ```bash
+    python -m venv venv
 # On Windows
-venv\Scripts\activate
+    ```bash
+    venv\Scripts\activate
 # On Mac/Linux
-source venv/bin/activate
+    ```bash
+    source venv/bin/activate
 
 2. Install Required Packages
-pip install -r requirements.txt
+    ```bash
+    pip install -r requirements.txt
 
 3. Run the app
-python main.py
+    ```bash
+    python main.py
