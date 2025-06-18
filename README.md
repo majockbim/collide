@@ -25,17 +25,18 @@ The game features two modes:
 1. Set up Virtual Environment (optional)
     ```bash
     python -m venv venv
-# On Windows
-    ```bash
+    # On Windows
     venv\Scripts\activate
-# On Mac/Linux
-    ```bash
+    # On Mac/Linux
     source venv/bin/activate
+    ```
 
 2. Install Required Packages
     ```bash
     pip install -r requirements.txt
+    ```
 
 3. Run the app
     ```bash
     python main.py
+    ```
