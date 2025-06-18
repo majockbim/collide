@@ -19,7 +19,7 @@ The game features two modes:
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/collide.git
+   git clone https://github.com/majockbim/collide.git
    cd collide
 
 1. Set up Virtual Environment (optional)
