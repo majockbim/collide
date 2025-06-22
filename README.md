@@ -10,8 +10,8 @@ The game features two modes:
 
 ## 🖥️ Requirements
 
-- Python 3.8 or newer
 - pip (Python package manager)
+- flet 
 
 ---
 

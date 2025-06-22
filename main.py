@@ -2,7 +2,6 @@ import flet as ft
 from collide.views.start_view import start_view
 from collide.views.menu_view import menu_view
 from collide.views.puzzle_mode_view import puzzle_view
-from collide.views.simulation_mode_view import simulation_view
 
 def main(page: ft.Page):
     # Set fixed window size and properties
@@ -18,7 +17,6 @@ def main(page: ft.Page):
         "/": start_view,
         "/menu": menu_view,
         "/puzzle": puzzle_view,
-        "/simulation": simulation_view,
     }
 
     page.fonts = {

@@ -49,20 +49,8 @@ def menu_view(page: ft.Page):
                                 border_radius=10,
                                 on_click=go_to_puzzle,
                             ),
-                            ft.Text("Simulation Mode", size=20, weight=ft.FontWeight.W_600, color="#e52c34"),
-                            ft.Container(
-                                content=ft.Text(
-                                    "Create and simulate your own physics experiments. "
-                                    "Draw lines, set parameters, and watch the physics engine bring your ideas to life.", color="#2b2d2e",
-                                    text_align=ft.TextAlign.CENTER
-                                ),
-                                alignment=ft.alignment.center,
-                                width=500,
-                                padding=15,
-                                bgcolor="#eae9e2",
-                                border_radius=10,
-                                on_click=go_to_simulation,
-                            ),
+                            ft.Text("More Gamemodes Coming Soon..", size=20, weight=ft.FontWeight.W_600, color="#e52c34"),
+                            
                         ],
                         spacing=25,
                         horizontal_alignment=ft.CrossAxisAlignment.CENTER,

@@ -62,7 +62,7 @@ def puzzle_view(page: ft.Page):
     status_text = ft.Text(
         "Draw lines to guide the ball to X, then tap START!",
         size=14,
-        color="white",
+        color="#2b2d2e",
         text_align=ft.TextAlign.CENTER,
         weight=ft.FontWeight.W_500
     )
@@ -219,7 +219,7 @@ def puzzle_view(page: ft.Page):
             physics_engine.add_lines(lines)
             physics_ball.start_moving()
             status_text.value = "Ball is moving..."
-            status_text.color = "white"
+            status_text.color = "#2b2d2e"
             page.update()
             await game_loop()
 
@@ -245,7 +245,7 @@ def puzzle_view(page: ft.Page):
         target_container.left = target_x - 15
         target_container.top = target_y - 20
         status_text.value = "Draw lines to guide the ball to X, then tap START!"
-        status_text.color = "white"
+        status_text.color = "#2b2d2e"
         drawing["start"] = None
         drawing["current_line"] = None
         page.update()
@@ -259,7 +259,7 @@ def puzzle_view(page: ft.Page):
             content=game_stack,
             width=canvas_width,
             height=canvas_height,
-            bgcolor="#87CEEB",
+            bgcolor="#ebece7",
             padding=0,
             margin=0,
         ),
