@@ -4,8 +4,7 @@
 
 The game features two modes:
 - **Puzzle Mode:** Draw lines to guide a falling ball into a randomly placed target.
-- **Simulator Mode:** Set the number and size of balls, then simulate free-fall and collisions.
-
+- **Simulator Mode:** Yet to come.
 ---
 
 ## 🖥️ Requirements
