@@ -1,13 +1,13 @@
 # Collide — Physics Puzzle Game Prototype
+---
+https://github.com/user-attachments/assets/0a3523fc-b2ef-4b89-8fe8-14e2a7b8f9b3
+
+---
 
 **Collide** is a physics-based puzzle game prototype built using [Flet](https://flet.dev), a Python UI framework for building desktop, web, and mobile apps with Flutter-like components.
 
 The game features the following mode(s):
 - **Puzzle Mode:** Draw lines to guide a falling ball into a randomly placed target.
----
-
-https://github.com/user-attachments/assets/0a3523fc-b2ef-4b89-8fe8-14e2a7b8f9b3
-
 ---
 
 ## 🖥️ Requirements
